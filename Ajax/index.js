@@ -8,6 +8,9 @@ var jokeArray = [];
 app.get("/", function (req, resp) {
     resp.sendFile(__dirname + "/index.html");
 });
+app.get("/t.js", function (req, res) {
+    res.sendFile(__dirname + "/t.js");
+});
 app.get("/dadJoke", function (req, resp) {
     var options = {
         method: "GET",

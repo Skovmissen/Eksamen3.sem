@@ -8,6 +8,11 @@ const jokeArray: any[] = [];
 app.get("/", (req, resp) => {
     resp.sendFile(__dirname + "/index.html");
 });
+
+app.get("/t.js", (req, res) => {
+    res.sendFile(__dirname + "/t.js");
+});
+
 app.get("/dadJoke", (req, resp) => {
     let options = {
         method: "GET",
@@ -69,13 +74,5 @@ app.put("/upvoteChuckJoke/:id", (req, resp) => {
     fs.writeFileSync("database.txt", jokeArray.toString());
     resp.send("Chuck Wins");
 })
-
-
-
-
-
-
-
-
 console.log("Server running")
 app.listen(3000);
