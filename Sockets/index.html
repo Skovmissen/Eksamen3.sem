@@ -1,0 +1,86 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
+    <script>
+        var socket = io();
+        function setUsername() {
+          
+            socket.emit('setUserName', document.getElementById('name').value);
+            return false;
+        };
+        var user;
+        socket.on("UserExists", function (data) {
+            document.getElementById('error-container').innerHTML = data;
+        });
+        socket.on("userSet", function (data) {
+            user = data.username;
+            document.getElementById("message").style.visibility = "visible";
+            document.getElementById("sendmsgbtn").style.visibility = "visible";
+            document.getElementById("name").style.visibility = "hidden";
+            document.getElementById("setnamebtn").style.visibility = "hidden";
+            document.getElementById("name").style.display = "none";
+            document.getElementById("setnamebtn").style.display = "none";
+            document.getElementById("message").style.display = "inline";
+            document.getElementById("sendmsgbtn").style.display = "inline";
+            document.getElementById("error-container").style.display = "none";
+        });
+        function sendMessage() {
+            msg = document.getElementById("message").value;
+            if (msg) {
+                socket.emit("msg", { message: msg, user: user });
+                document.forms["msgform"].reset();
+                return false;
+            }
+
+        }
+        socket.on('newMsg', function (data) {
+            if (user) {
+                document.getElementById('message-container').innerHTML += '<div><b>' +
+                    data.user + '</b>: ' + data.message + '</div>'
+            }
+        });
+        socket.on("privateMessage", function (data) {
+            if (user) {
+                if (data.user === user) {
+                    var msg = "" + data.message;
+                    msg = msg.substring(3);
+                    var index = msg.indexOf(' ');
+                    var targetname = msg.substring(0, index);
+                    msg = msg.substring(index + 1);
+                    $('#private-container').append('<div><b>' +
+                        "You whispered to " + targetname + ": " + '</b> ' + msg + '</div>')
+                }
+                else {
+                    document.getElementById('private-container').innerHTML += '<div><b>' +
+                        data.user + '</b>: ' + data.message + '</div>'
+                }
+            }
+
+        });
+    </script>
+</head>
+
+<body>
+    <form id="chatform" onsubmit="return setUsername()" action="">
+        <div id="error-container"></div>
+        <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+        <button type="button" id="setnamebtn" name="button" onclick="setUsername()">Let me chat!</button>
+    </form>
+    <form id="msgform" onsubmit="return sendMessage()" action="">
+        <input style="visibility: hidden; display:none" type="text" id="message">
+        <button style="visibility: hidden; display:none" id="sendmsgbtn" type="button" name="button" onclick="sendMessage()">Send</button>
+        <h2>Global Chat</h2>
+        <div id="message-container"></div>
+        <h2>Private Chat</h2>
+        <div id="private-container"></div>
+    </form>
+</body>
+
+</html>
