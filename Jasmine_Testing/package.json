@@ -1,0 +1,17 @@
+{
+  "name": "jasmine_testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine-node spec"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jasmine-node": "^1.14.5"
+  },
+  "devDependencies": {
+    "@types/jasmine-node": "^1.14.32"
+  }
+}
